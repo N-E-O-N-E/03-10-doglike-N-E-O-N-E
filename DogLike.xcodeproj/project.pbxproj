@@ -15,6 +15,7 @@
 		CE87D9432CB3A8BA00832BED /* DogRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE87D93E2CB3A8BA00832BED /* DogRepository.swift */; };
 		CE87D9442CB3A8BA00832BED /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE87D93B2CB3A8BA00832BED /* ContentView.swift */; };
 		CE87D9452CB3A8BA00832BED /* DogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE87D9392CB3A8BA00832BED /* DogViewModel.swift */; };
+		FA50B3C82CDA665E00BD7D36 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50B3C72CDA665E00BD7D36 /* NotificationManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +38,7 @@
 		CE87D93B2CB3A8BA00832BED /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		CE87D93D2CB3A8BA00832BED /* DogRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DogRepositoryProtocol.swift; sourceTree = "<group>"; };
 		CE87D93E2CB3A8BA00832BED /* DogRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DogRepository.swift; sourceTree = "<group>"; };
+		FA50B3C72CDA665E00BD7D36 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		FA83FF782CD8F462005F8AF3 /* DogLikeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DogLikeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -114,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				CE87D9392CB3A8BA00832BED /* DogViewModel.swift */,
+				FA50B3C72CDA665E00BD7D36 /* NotificationManager.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -244,6 +247,7 @@
 				CE87D9412CB3A8BA00832BED /* DogResponse.swift in Sources */,
 				CE87D9422CB3A8BA00832BED /* DogRepositoryProtocol.swift in Sources */,
 				CE87D9432CB3A8BA00832BED /* DogRepository.swift in Sources */,
+				FA50B3C82CDA665E00BD7D36 /* NotificationManager.swift in Sources */,
 				CE87D9442CB3A8BA00832BED /* ContentView.swift in Sources */,
 				CE87D9452CB3A8BA00832BED /* DogViewModel.swift in Sources */,
 			);
