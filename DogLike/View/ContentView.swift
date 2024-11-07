@@ -13,7 +13,9 @@ struct ContentView: View {
     @State private var rotationAngle: Double = 0
     @State private var opacity: Double = 0.0
     @State private var blurRadius: Double = 0
-    @State private var dislikeScale: Double = 1.0
+    @State private var scale: Double = 1.0
+    @GestureState private var scaleMagn: CGFloat = 1.0
+    @State private var offsetX: CGFloat = 0.0
     
     var body: some View {
         VStack {
@@ -22,34 +24,122 @@ struct ContentView: View {
                 .font(.system(size: 60, weight: .heavy, design: .rounded))
                 .foregroundColor(.black)
                 .padding()
-            
-            if let dogImageURL = viewModel.dogImageURL {
-                AsyncImage(url: dogImageURL) { image in
-                    image
-                        .resizable() .scaledToFit()
-                        .clipShape(RoundedRectangle(cornerRadius: pictureEffect1 ? 50 : 20))
-                        .frame(maxWidth: .infinity, maxHeight: 400)
-                        .shadow(color: pictureEffect1 ? .mint : .gray ,
-                                radius: pictureEffect1 ? 100 : 10)
-                        .padding()
-                        .scaleEffect(dislikeScale)
-                        .rotationEffect(.degrees(rotationAngle))
-                        .blur(radius: blurRadius )
-                        .animation(.easeInOut(duration: 0.5),value: rotationAngle)
-                        .animation(.easeInOut(duration: 0.5), value: opacity)
-                        .animation(.easeInOut(duration: 0.5), value: blurRadius)
-                    
-                } placeholder: {
-                    ProgressView()
-                }
-                .frame(width: 300, height: 400)
-                .onTapGesture {
-                    withAnimation(){
-                        pictureEffect1.toggle()
-                    }
-                }
-            } else {
-                ProgressView()
+            VStack {
+                if let dogImageURL = viewModel.dogImageURL {
+                    AsyncImage(url: dogImageURL) { image in
+                        image
+                            .resizable()
+                            .scaledToFit()
+                            .clipShape(RoundedRectangle(cornerRadius: pictureEffect1 ? 35 : 10))
+                            .frame(maxWidth: .infinity, maxHeight: 400)
+                            .offset(x: offsetX)
+                            .padding()
+                        
+                            .scaleEffect(scale)
+                            .rotationEffect(.degrees(rotationAngle))
+                            .blur(radius: blurRadius )
+                        
+                            .animation(.easeInOut(duration: 0.5),value: rotationAngle)
+                            .animation(.easeInOut(duration: 0.5), value: opacity)
+                            .animation(.easeInOut(duration: 0.5), value: blurRadius)
+                        
+                            .onTapGesture(count: 2, perform: {
+                                scale = 1.0
+                                offsetX = 0.0
+                            })
+                            .onTapGesture {
+                                print("BildUrl: \(dogImageURL)")
+                                withAnimation(){
+                                    pictureEffect1.toggle()
+                                }
+                            }
+                            .gesture(
+                                MagnifyGesture()
+                                    .onChanged({ scale in
+                                        self.scale = scale.magnification
+                                    })
+                                    .onEnded({ scale in
+                                        self.scale = scale.magnification
+                                    })
+                            )
+                            .gesture(
+                                withAnimation() {
+                                    DragGesture()
+                                        .onChanged { value in
+                                            offsetX = value.translation.width
+                                        }
+                                        .onEnded { value in
+                                            if value.translation.width > 150 {
+                                                
+                                                viewModel.likeAction()
+                                                if likeCounter % 10 == 0 {
+                                                    viewModel.likeNotification()
+                                                }
+                                                withAnimation(){
+                                                    likeButtonPressedColor = .green
+                                                    likeButtonPressed.toggle()
+                                                } completion: {
+                                                    likeButtonPressedColor = .blue
+                                                }
+                                                withAnimation(.easeInOut(duration: 0.5)) {
+                                                    rotationAngle += 360
+                                                    opacity = 1.0
+                                                    blurRadius = 5
+                                                } completion: {
+                                                    opacity = 0.3
+                                                    blurRadius = 0
+                                                }
+                                                offsetX = 0.0
+                                                
+                                            } else if value.translation.width < -150 {
+                                                
+                                                withAnimation(){
+                                                    rotationAngle -= 360
+                                                    scale = 0.0
+                                                    opacity = 1.0
+                                                    dislikeButtonPressedColor = .red
+                                                    dislikeButtonPressed.toggle()
+                                                } completion: {
+                                                    viewModel.dislikeAction()
+                                                    dislikeButtonPressedColor = .blue
+                                                    rotationAngle += 360
+                                                    scale = 1.0
+                                                    opacity = 0.0
+                                                }
+                                                
+                                                offsetX = 0.0
+                                                
+                                            } else {
+                                                offsetX = 0
+                                            }
+                                        }
+                                }
+                            )
+                            .clipped()
+                            .shadow(color: pictureEffect1 ? .purple : .gray ,radius: pictureEffect1 ? 100 : 10)
+                        
+                            .onLongPressGesture(minimumDuration: 1.5, perform: {
+                                viewModel.likeAction()
+                                
+                                if likeCounter % 10 == 0 {
+                                    viewModel.likeNotification()
+                                }
+                                withAnimation(){
+                                    likeButtonPressedColor = .green; likeButtonPressed.toggle()
+                                } completion: {
+                                    likeButtonPressedColor = .blue
+                                }
+                                withAnimation(.easeInOut(duration: 0.5)) {
+                                    rotationAngle += 360; opacity = 1.0; blurRadius = 5
+                                } completion: {
+                                    opacity = 0.3; blurRadius = 0
+                                }
+                            })
+                        
+                        
+                        
+                    } placeholder: { ProgressView() }
+                } else { ProgressView() }
             }
             
             Text(viewModel.breedName)
@@ -78,7 +168,7 @@ struct ContentView: View {
                 Button(action: {
                     withAnimation(){
                         rotationAngle -= 360
-                        dislikeScale = 0.0
+                        scale = 0.0
                         opacity = 1.0
                         dislikeButtonPressedColor = .red
                         dislikeButtonPressed.toggle()
@@ -86,7 +176,7 @@ struct ContentView: View {
                         viewModel.dislikeAction()
                         dislikeButtonPressedColor = .blue
                         rotationAngle += 360
-                        dislikeScale = 1.0
+                        scale = 1.0
                         opacity = 0.0
                     }
                 }) {
